@@ -27,10 +27,16 @@ export class CreateUsers1724077071562 implements MigrationInterface {
             name: 'email',
             type: 'varchar',
           },
+          // {
+          //   name: 'role',
+          //   type: 'tinyint',
+          //   default: 0,
+          // },
           {
             name: 'role',
-            type: 'tinyint',
-            default: 0,
+            type: 'enum',
+            enum: ['ADMIN', 'BUYER'],
+            default: `'BUYER'`,
           },
           {
             name: 'password',
