@@ -11,10 +11,15 @@ import {
 import { UsersService } from '../services/users.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { AuthService } from '../services/auth.service';
+import { SignInDto } from '../dto/sign-in.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Get()
   findAll() {
@@ -37,6 +42,16 @@ export class UsersController {
   @Post()
   async create(@Body() body: CreateUserDto) {
     return await this.usersService.create(body);
+  }
+
+  @Post('signUp')
+  async signUp(@Body() body: CreateUserDto) {
+    return await this.authService.signUp(body);
+  }
+
+  @Post('signIn')
+  async signIn(@Body() body: SignInDto) {
+    return await this.authService.signIn(body.email, body.password);
   }
 
   @Delete(':id')
