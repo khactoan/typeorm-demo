@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('products')
 export class Product {
@@ -35,7 +37,6 @@ export class Product {
   @Column()
   userId: number;
 
-  // @ManyToOne(() => User, (user) => user.products)
-  // @JoinColumn({ referencedColumnName: 'userId' })
-  // user: User;
+  @ManyToOne(() => User, (user) => user.products)
+  user: User;
 }

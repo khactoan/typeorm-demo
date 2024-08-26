@@ -13,7 +13,9 @@ export class ProductsService {
   ) {}
 
   async find(): Promise<Product[]> {
-    return await this.productRepository.find();
+    return await this.productRepository.find({
+      relations: { user: true },
+    });
   }
 
   async create(product: CreateProductDto): Promise<Product> {

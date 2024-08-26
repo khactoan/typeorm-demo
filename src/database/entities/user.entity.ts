@@ -5,7 +5,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Product } from './product.entity';
 
 @Entity('users')
 export class User {
@@ -39,6 +41,6 @@ export class User {
     return `Hello guys, my name is ${this.fullName}`;
   }
 
-  // @OneToMany(() => Product, (product) => product.user)
-  // products: Product[];
+  @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
 }
