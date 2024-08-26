@@ -1,3 +1,4 @@
+import { Exclude, Expose } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -23,6 +24,7 @@ export class User {
   @Column()
   role: string;
 
+  @Exclude()
   @Column()
   password: string;
 
@@ -31,4 +33,12 @@ export class User {
 
   @Column()
   favoriteTheme: string;
+
+  @Expose()
+  get greeting(): string {
+    return `Hello guys, my name is ${this.fullName}`;
+  }
+
+  // @OneToMany(() => Product, (product) => product.user)
+  // products: Product[];
 }
