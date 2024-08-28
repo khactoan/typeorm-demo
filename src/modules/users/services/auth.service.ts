@@ -27,12 +27,12 @@ export class AuthService {
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (isMatch) {
-        return 'Sign in successfully';
+        return user;
       } else {
-        return 'Invalid user or password';
+        return null;
       }
     } else {
-      return 'Invalid user or password';
+      return null;
     }
   }
 }
