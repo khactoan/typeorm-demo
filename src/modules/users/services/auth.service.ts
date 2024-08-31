@@ -4,6 +4,7 @@ import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -18,17 +19,17 @@ export class AuthService {
     });
 
     if (isExist) {
-      return new BadRequestException('User already exists');
+      throw new BadRequestException('User already exists');
     } else {
       const salt = await bcrypt.genSalt();
-      console.log('salt', salt);
-      console.log('password', createUser.password);
       const password = await bcrypt.hash(createUser.password, salt);
 
-      return await this.usersRepository.save({
+      const newUser = await this.usersRepository.save({
         ...createUser,
         password,
       });
+
+      return plainToInstance(User, newUser);
     }
   }
 
@@ -39,7 +40,7 @@ export class AuthService {
     });
 
     if (!user) {
-      return new BadRequestException('Invalid email or password');
+      throw new BadRequestException('Invalid email or password');
     } else {
       const hashedPassword = user.password;
       const isMatch = await bcrypt.compare(password, hashedPassword);
@@ -47,7 +48,7 @@ export class AuthService {
       if (isMatch) {
         return 'Login successfully!';
       } else {
-        return new BadRequestException('Invalid email or password');
+        throw new BadRequestException('Invalid email or password');
       }
     }
   }
