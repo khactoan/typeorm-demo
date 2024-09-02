@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Session,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -23,6 +24,7 @@ export class UsersController {
 
   @Get()
   findAll() {
+    console.log('Handled execute');
     return this.usersService.findAll();
   }
 
@@ -39,23 +41,29 @@ export class UsersController {
     return await this.usersService.update(id, body);
   }
 
-  @Post()
-  async create(@Body() body: CreateUserDto) {
-    return await this.usersService.create(body);
-  }
-
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.delete(id);
   }
 
   @Post('sign-up')
-  async signUp(@Body() body: CreateUserDto) {
-    return await this.authService.signUp(body);
+  async signUp(
+    @Body() body: CreateUserDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const user = await this.authService.signUp(body);
+    session.userId = user.id;
+
+    return user;
   }
 
   @Post('sign-in')
-  async signIn(@Body() body: SignInDto) {
-    return await this.authService.signIn(body.email, body.password);
+  async signIn(
+    @Body() body: SignInDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const user = await this.authService.signIn(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
 }

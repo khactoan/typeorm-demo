@@ -7,10 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { ProductsService } from '../services/products.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
+import { AdminGuard } from 'src/guards/admin.guard';
+import { CurrentUser } from 'src/modules/users/decorators/current-user.decorator';
+import { User } from 'src/database/entities/user.entity';
 
 @Controller('products')
 export class ProductsController {
@@ -21,10 +25,10 @@ export class ProductsController {
     return await this.productsService.find();
   }
 
+  @UseGuards(AdminGuard)
   @Post()
-  async create(@Body() product: CreateProductDto) {
-    console.log(product);
-    return await this.productsService.create(product);
+  async create(@Body() product: CreateProductDto, @CurrentUser() user: User) {
+    return await this.productsService.create(product, user);
   }
 
   @Patch(':id')

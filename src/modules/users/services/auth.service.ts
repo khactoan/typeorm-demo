@@ -36,7 +36,6 @@ export class AuthService {
   async signIn(email: string, password: string) {
     const user = await this.usersRepository.findOne({
       where: { email },
-      select: ['password'],
     });
 
     if (!user) {
@@ -46,7 +45,7 @@ export class AuthService {
       const isMatch = await bcrypt.compare(password, hashedPassword);
 
       if (isMatch) {
-        return 'Login successfully!';
+        return user;
       } else {
         throw new BadRequestException('Invalid email or password');
       }
