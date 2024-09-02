@@ -8,6 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Product } from './product.entity';
+import { UserRole } from 'src/modules/users/const/user';
 
 @Entity('users')
 export class User {
@@ -23,7 +24,11 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.BUYER,
+  })
   role: string;
 
   @Exclude()
