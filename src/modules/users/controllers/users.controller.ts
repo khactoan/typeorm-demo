@@ -24,7 +24,6 @@ export class UsersController {
 
   @Get()
   findAll() {
-    console.log('Handled execute');
     return this.usersService.findAll();
   }
 

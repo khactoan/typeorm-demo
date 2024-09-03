@@ -47,8 +47,7 @@ export class ProductsController {
     )
     files: Array<Express.Multer.File>,
   ) {
-    console.log(files);
-    return await this.productsService.create(product, user);
+    return await this.productsService.create(product, user, files);
   }
 
   @UseGuards(RolesGuard)
