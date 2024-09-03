@@ -12,9 +12,11 @@ import {
 import { CreateProductDto } from '../dto/create-product.dto';
 import { ProductsService } from '../services/products.service';
 import { UpdateProductDto } from '../dto/update-product.dto';
-import { AdminGuard } from 'src/guards/admin.guard';
 import { CurrentUser } from 'src/modules/users/decorators/current-user.decorator';
 import { User } from 'src/database/entities/user.entity';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/modules/users/decorators/roles.decorator';
+import { FormDataRequest } from 'nestjs-form-data';
 
 @Controller('products')
 export class ProductsController {
@@ -25,7 +27,9 @@ export class ProductsController {
     return await this.productsService.find();
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(RolesGuard)
+  @Roles(['ADMIN'])
+  @FormDataRequest()
   @Post()
   async create(@Body() product: CreateProductDto, @CurrentUser() user: User) {
     return await this.productsService.create(product, user);
