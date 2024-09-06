@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Session,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -55,7 +56,20 @@ export class UsersController {
   }
 
   @Post('sign-in')
-  async signIn(@Body() body: SignInDto) {
-    return await this.authService.signIn(body.email, body.password);
+  async signIn(
+    @Body() body: SignInDto,
+    @Session() session: Record<string, any>,
+  ) {
+    console.log('Route handler executed');
+    console.log('session', session);
+    const user = await this.authService.signIn(body.email, body.password);
+    session.userId = user.id;
+    return 'Login successfully!';
+  }
+
+  @Post('sign-out')
+  signOut(@Session() session: Record<string, any>) {
+    delete session.userId;
+    return 'Sign out successfully!';
   }
 }

@@ -18,7 +18,4 @@ export class CreateProductDto {
   @IsNumber()
   @IsPositive()
   price: number;
-
-  @IsNumber()
-  userId: number;
 }
