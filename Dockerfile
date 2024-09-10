@@ -42,4 +42,12 @@ ENV SESSION_SECRET=${SESSION_SECRET}
 
 EXPOSE ${PORT:-3000}
  
-CMD ["node", "dist/src/main.js"]
+# CMD ["node", "dist/src/main.js"]
+# Copy start script
+COPY --from=builder --chown=node:node /home/node/docker/start.sh /start.sh
+
+# Set executable permissions for start script
+RUN chmod +x /start.sh
+
+# Start the Node.js application and then NGINX
+CMD ["/start.sh"]
