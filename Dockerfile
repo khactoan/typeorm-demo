@@ -44,10 +44,10 @@ EXPOSE ${PORT:-3000}
  
 # CMD ["node", "dist/src/main.js"]
 # Copy start script
-COPY --from=builder --chown=node:node /home/node/docker/start.sh /start.sh
+COPY --from=builder --chown=node:node /home/node/start.sh ./start.sh
 
 # Set executable permissions for start script
-RUN chmod +x /start.sh
+RUN chmod +x ./start.sh
 
 # Start the Node.js application and then NGINX
-CMD ["/start.sh"]
+CMD ["./start.sh"]

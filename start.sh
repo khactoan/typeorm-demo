@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # Start Node.js application in the background
-npm run migration:run && npm run start:prod
+npm run migration:run:prod && npm run start:prod

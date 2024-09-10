@@ -17,7 +17,10 @@ export const DatabaseConfig: DataSourceOptions = {
 
 const AppDataSource = new DataSource({
   ...DatabaseConfig,
-  migrations: ['src/database/migrations/*.ts'],
+  migrations:
+    process.env.NODE_ENV === 'production'
+      ? ['./dist/src/database/migrations/*.js'] // Use JS files in production
+      : ['./src/database/migrations/*.ts'],
 });
 
 export default AppDataSource;
