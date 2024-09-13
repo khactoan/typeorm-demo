@@ -49,9 +49,6 @@ export class ProductsController {
     )
     files: Array<Express.Multer.File>,
   ) {
-    console.log('================================');
-    console.log(files);
-    console.log('================================');
     return await this.productsService.create(product, currentUser, files);
   }
 
@@ -69,7 +66,6 @@ export class ProductsController {
   @Roles(['ADMIN'])
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    console.log(id);
     return await this.productsService.delete(id);
   }
 }

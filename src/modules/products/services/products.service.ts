@@ -31,7 +31,7 @@ export class ProductsService {
     files: Express.Multer.File[],
   ): Promise<Product> {
     let newProduct;
-    console.log(1);
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -50,18 +50,22 @@ export class ProductsService {
         fs.mkdirSync(folderDir, { recursive: true });
       }
 
-      await Promise.all(
-        files.map(async (file) => {
-          const filePath = `${folderDir}/${file.originalname}`;
-          fs.writeFileSync(filePath, file.buffer);
+      const productImages = files.map((file) => {
+        const filePath = `${folderDir}/${file.originalname}`;
+        fs.writeFileSync(filePath, file.buffer);
 
-          await queryRunner.manager.save(ProductImage, {
-            imageUrl: `${process.env.HOST}/${subFolderDir}/${file.originalname}`,
-            productId: newProduct.id,
-          });
-        }),
+        return {
+          imageUrl: `${process.env.HOST}/${subFolderDir}/${file.originalname}`,
+          productId: newProduct.id,
+        };
+      });
+
+      const newProductImages = await queryRunner.manager.save(
+        ProductImage,
+        productImages,
       );
 
+      newProduct.productImages = newProductImages;
       await queryRunner.commitTransaction();
     } catch (err) {
       // since we have errors lets rollback the changes we made
@@ -72,14 +76,7 @@ export class ProductsService {
       await queryRunner.release();
     }
 
-    return await this.productRepository.findOne({
-      where: {
-        id: newProduct.id,
-      },
-      relations: {
-        productImages: true,
-      },
-    });
+    return newProduct;
   }
 
   async delete(id: number): Promise<string> {

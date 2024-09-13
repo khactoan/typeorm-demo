@@ -60,8 +60,6 @@ export class UsersController {
     @Body() body: SignInDto,
     @Session() session: Record<string, any>,
   ) {
-    console.log('Route handler executed');
-    console.log('session', session);
     const user = await this.authService.signIn(body.email, body.password);
     session.userId = user.id;
     return 'Login successfully!';
