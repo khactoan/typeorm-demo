@@ -4,10 +4,13 @@ import {
   Delete,
   Get,
   Param,
+  ParseFilePipeBuilder,
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { ProductsService } from '../services/products.service';
@@ -16,6 +19,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/modules/users/decorators/roles.decorator';
 import { CurrentUser } from 'src/modules/users/decorators/current-user.decorator';
 import { User } from 'src/database/entities/user.entity';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
@@ -28,12 +32,27 @@ export class ProductsController {
 
   @UseGuards(RolesGuard)
   @Roles(['ADMIN'])
+  @UseInterceptors(FilesInterceptor('files', 3))
   @Post()
   async create(
     @Body() product: CreateProductDto,
     @CurrentUser() currentUser: User,
+    @UploadedFiles(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /^image\/(jpg|jpeg|png)$/,
+        })
+        .addMaxSizeValidator({
+          maxSize: 10_000_000,
+        })
+        .build(),
+    )
+    files: Array<Express.Multer.File>,
   ) {
-    return await this.productsService.create(product, currentUser);
+    console.log('================================');
+    console.log(files);
+    console.log('================================');
+    return await this.productsService.create(product, currentUser, files);
   }
 
   @UseGuards(RolesGuard)

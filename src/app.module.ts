@@ -6,6 +6,8 @@ import { DatabaseConfig } from 'ormconfig';
 import { UsersModule } from './modules/users/users.module';
 import { ProductsModule } from './modules/products/products.module';
 import { CurrentUserMiddleware } from './modules/users/middlewares/current-user.middleware';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -13,6 +15,9 @@ import { CurrentUserMiddleware } from './modules/users/middlewares/current-user.
       ...DatabaseConfig,
       autoLoadEntities: true,
       logging: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
     }),
     UsersModule,
     ProductsModule,
