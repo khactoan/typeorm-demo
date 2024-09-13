@@ -31,7 +31,7 @@ export class ProductsService {
     files: Express.Multer.File[],
   ): Promise<Product> {
     let newProduct;
-    console.log(1);
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
