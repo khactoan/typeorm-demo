@@ -2,6 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,16 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('Shop demo')
+    .setDescription('Shopping website API documentation')
+    .setVersion('1.0')
+    .addTag('Shop demo')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('documentation', app, document);
+
   await app.listen(3000);
 }
 bootstrap();

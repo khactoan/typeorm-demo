@@ -20,8 +20,15 @@ import { Roles } from 'src/modules/users/decorators/roles.decorator';
 import { CurrentUser } from 'src/modules/users/decorators/current-user.decorator';
 import { User } from 'src/database/entities/user.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  ApiCreatedResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { ProductDto } from '../dto/product.dto';
 
 @Controller('products')
+@ApiTags('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
@@ -33,6 +40,13 @@ export class ProductsController {
   @UseGuards(RolesGuard)
   @Roles(['ADMIN'])
   @UseInterceptors(FilesInterceptor('files', 3))
+  @ApiCreatedResponse({
+    type: ProductDto,
+    description: 'Create a product with image upload',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'You are not allowed to create a product',
+  })
   @Post()
   async create(
     @Body() product: CreateProductDto,

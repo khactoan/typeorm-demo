@@ -14,19 +14,31 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { AuthService } from '../services/auth.service';
 import { SignInDto } from '../dto/sign-in.dto';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { UserDto } from '../dto/user.dto';
 
 @Controller('users')
+@ApiTags('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
   ) {}
 
+  @ApiOkResponse({
+    type: UserDto,
+    isArray: true,
+    description: 'Return a list of users',
+  })
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
+  @ApiOkResponse({
+    type: UserDto,
+    description: 'Return user by ID',
+  })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
@@ -40,6 +52,9 @@ export class UsersController {
     return await this.usersService.update(id, body);
   }
 
+  /**
+   * Create an user
+   */
   @Post()
   async create(@Body() body: CreateUserDto) {
     return await this.usersService.create(body);
