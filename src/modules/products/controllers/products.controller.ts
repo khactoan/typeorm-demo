@@ -20,6 +20,8 @@ import { Roles } from 'src/modules/users/decorators/roles.decorator';
 import { CurrentUser } from 'src/modules/users/decorators/current-user.decorator';
 import { User } from 'src/database/entities/user.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiCreatedResponse, ApiResponse } from '@nestjs/swagger';
+import { ProductDto } from '../dto/product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -33,6 +35,11 @@ export class ProductsController {
   @UseGuards(RolesGuard)
   @Roles(['ADMIN'])
   @UseInterceptors(FilesInterceptor('files', 3))
+  @ApiCreatedResponse({
+    type: ProductDto,
+    description: 'Create a product with file upload',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
   async create(
     @Body() product: CreateProductDto,
