@@ -85,4 +85,9 @@ export class UsersController {
     delete session.userId;
     return 'Sign out successfully!';
   }
+
+  @Post('forgot-password')
+  async forgotPassword() {
+    return 'return password via email';
+  }
 }
