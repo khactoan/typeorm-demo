@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -26,6 +27,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ProductDto } from '../dto/product.dto';
+import { PaginationDto } from 'src/shared/dto/pagination.dto';
+import { PaginationMetaDto } from 'src/shared/dto/pagination-meta.dto';
+import { PageDto } from 'src/shared/dto/page.dto';
 
 @Controller('products')
 @ApiTags('products')
@@ -33,8 +37,13 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
-  async find() {
-    return await this.productsService.find();
+  async find(@Query() paginationDto: PaginationDto) {
+    const { items, totalItem } = await this.productsService.find(paginationDto);
+
+    return new PageDto(
+      items,
+      new PaginationMetaDto({ paginationDto, totalItem }),
+    );
   }
 
   @UseGuards(RolesGuard)
