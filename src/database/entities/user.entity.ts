@@ -31,15 +31,10 @@ export class User {
   password: string;
 
   @Column()
-  fullName: string;
+  name: string;
 
   @Column()
   favoriteTheme: string;
-
-  @Expose()
-  get greeting(): string {
-    return `Hello guys, my name is ${this.fullName}`;
-  }
 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
