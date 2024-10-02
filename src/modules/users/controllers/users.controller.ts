@@ -71,13 +71,8 @@ export class UsersController {
   }
 
   @Post('sign-in')
-  async signIn(
-    @Body() body: SignInDto,
-    @Session() session: Record<string, any>,
-  ) {
-    const user = await this.authService.signIn(body.email, body.password);
-    session.userId = user.id;
-    return 'Login successfully!';
+  async signIn(@Body() body: SignInDto) {
+    return await this.authService.signIn(body.email, body.password);
   }
 
   @Post('sign-out')
